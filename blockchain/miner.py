@@ -58,6 +58,7 @@ if __name__ == '__main__':
     print("ID is", id)
     f.close()
 
+    #Remember to change name in id.txt file
     if id == 'NONAME\n':
         print("ERROR: You must change your name in `my_id.txt`!")
         exit()
