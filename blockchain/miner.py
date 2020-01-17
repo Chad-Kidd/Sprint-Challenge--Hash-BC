@@ -9,6 +9,8 @@ from timeit import default_timer as timer
 
 import random
 import json
+from random import randint
+
 
 
 def proof_of_work(last_proof):
@@ -22,12 +24,14 @@ def proof_of_work(last_proof):
     """
     start = timer()
 
-    print("Searching for next proof")
-    proof = 10
+    print(f"Searching for next proof")
+    # proof = 3
+    last_hash = hashlib.sha256(f'{last_proof}'.encode()).hexdigest()
+    proof = last_proof*randint(0, 800)
     #  TODO: Your code here
 
-    while valid_proof(last_proof, proof) is False:
-        proof +=1000
+    while valid_proof(last_hash, proof) is False:
+        proof += 1
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
 
@@ -43,14 +47,22 @@ def valid_proof(last_hash, proof):
 
     # TODO: Your code here!
     #encode both and hashlib both
-    guess = f"{proof}".encode()
-    last_hash = f"{last_hash}".encode()
-    guess_hash = hashlib.sha256(guess).hexdigest()
-    # print(guess_hash)
-    last_guess = hashlib.sha256(last_hash).hexdigest()
-    # print(last_guess)
-    print(str(last_guess)[-6], str(guess_hash)[:6])
-    return last_guess[-6] == guess_hash[:6] 
+    
+    # guess = f"{proof}".encode()
+    # guess_hash = hashlib.sha256(guess).hexdigest()
+    # # print(guess_hash)
+    # last_proof = f"{last_hash}".encode()
+    # last_proof_hash = hashlib.sha256(last_proof).hexdigest()
+    # # print(last_guess)
+    # print(str(guess_hash)[:6], str(last_proof_hash)[-6])
+    # return guess_hash[:6] == last_proof_hash[-6:]
+
+    guess_hash = hashlib.sha256(f'{proof}'.encode()).hexdigest()
+    if guess_hash[:6] == last_hash[-6:]:
+        print('Guess:', guess_hash[:6], 'Last:', last_hash[-6:])
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
