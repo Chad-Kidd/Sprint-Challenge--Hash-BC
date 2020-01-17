@@ -8,6 +8,9 @@ from uuid import uuid4
 from timeit import default_timer as timer
 
 import random
+import json
+from random import randint
+
 
 
 def proof_of_work(last_proof):
@@ -19,13 +22,16 @@ def proof_of_work(last_proof):
     - p is the previous proof, and p' is the new proof
     - Use the same method to generate SHA-256 hashes as the examples in class
     """
-
     start = timer()
 
-    print("Searching for next proof")
-    proof = 0
+    print(f"Searching for next proof")
+    # proof = 3
+    last_hash = hashlib.sha256(f'{last_proof}'.encode()).hexdigest()
+    proof = last_proof*randint(0, 800)
     #  TODO: Your code here
 
+    while valid_proof(last_hash, proof) is False:
+        proof += 1
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
 
@@ -40,7 +46,23 @@ def valid_proof(last_hash, proof):
     """
 
     # TODO: Your code here!
-    pass
+    #encode both and hashlib both
+    
+    # guess = f"{proof}".encode()
+    # guess_hash = hashlib.sha256(guess).hexdigest()
+    # # print(guess_hash)
+    # last_proof = f"{last_hash}".encode()
+    # last_proof_hash = hashlib.sha256(last_proof).hexdigest()
+    # # print(last_guess)
+    # print(str(guess_hash)[:6], str(last_proof_hash)[-6])
+    # return guess_hash[:6] == last_proof_hash[-6:]
+
+    guess_hash = hashlib.sha256(f'{proof}'.encode()).hexdigest()
+    if guess_hash[:6] == last_hash[-6:]:
+        print('Guess:', guess_hash[:6], 'Last:', last_hash[-6:])
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
@@ -58,6 +80,7 @@ if __name__ == '__main__':
     print("ID is", id)
     f.close()
 
+    #Remember to change name in id.txt file
     if id == 'NONAME\n':
         print("ERROR: You must change your name in `my_id.txt`!")
         exit()
